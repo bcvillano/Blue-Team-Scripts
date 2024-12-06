@@ -40,9 +40,12 @@ def verbose(pid):
     for conn in conns:
         conn_type = "TCP" if conn.type == socket.SOCK_STREAM else "UDP" if conn.type == socket.SOCK_DGRAM else "UNKNOWN"
         print(f"\tConnection Type: {conn_type}")
-        print(f"\tLocal Address: {conn.laddr[0]}:{conn.laddr[1]}")
-        print(f"\tRemote Address: {conn.raddr[0]}:{conn.raddr[1]}")
-        print(f"\tStatus: {conn.status}")
+        try:
+            print(f"\tLocal Address: {conn.laddr[0]}:{conn.laddr[1]}")
+            print(f"\tRemote Address: {conn.raddr[0]}:{conn.raddr[1]}")
+        except:
+            pass #skips unprintable information
+        print(f"\tStatus: {conn.status}\n")
 
 
 def main():
