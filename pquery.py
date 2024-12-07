@@ -32,7 +32,13 @@ def get_process_info(pid):
 
 def verbose(pid):
     files = psutil.Process(pid).open_files()
-    conns = psutil.Process(pid).net_connections()
+    try:
+        conns = psutil.Process(pid).net_connections()
+    except:
+        try:
+            conns = psutil.Process(pid).connections(kind='inet')
+        except:
+            conns = []
     print(f"Process Open Files: ", end="")
     for file in files:
         print(file.path, end=", ")
