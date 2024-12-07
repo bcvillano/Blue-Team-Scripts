@@ -44,8 +44,8 @@ def verbose(pid):
             print(f"\tLocal Address: {conn.laddr[0]}:{conn.laddr[1]}")
             print(f"\tRemote Address: {conn.raddr[0]}:{conn.raddr[1]}")
         except:
-            pass
-        print(f"\tStatus: {conn.status}")
+            pass #skips unprintable information
+        print(f"\tStatus: {conn.status}\n")
 
 
 def main():
