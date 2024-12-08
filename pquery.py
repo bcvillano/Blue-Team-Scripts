@@ -32,26 +32,23 @@ def get_process_info(pid):
 
 def verbose(pid):
     files = psutil.Process(pid).open_files()
-    try:
-        conns = psutil.Process(pid).net_connections()
-    except:
-        try:
-            conns = psutil.Process(pid).connections(kind='inet')
-        except:
-            conns = []
+    conns = psutil.net_connections(kind='inet')
     print(f"Process Open Files: ", end="")
     for file in files:
         print(file.path, end=", ")
     print(f"\nProcess Connections:")
     for conn in conns:
-        conn_type = "TCP" if conn.type == socket.SOCK_STREAM else "UDP" if conn.type == socket.SOCK_DGRAM else "UNKNOWN"
-        print(f"\tConnection Type: {conn_type}")
-        try:
-            print(f"\tLocal Address: {conn.laddr[0]}:{conn.laddr[1]}")
-            print(f"\tRemote Address: {conn.raddr[0]}:{conn.raddr[1]}")
-        except:
-            pass #skips unprintable information
-        print(f"\tStatus: {conn.status}\n")
+        if conn.pid == pid:
+            conn_type = "TCP" if conn.type == socket.SOCK_STREAM else "UDP" if conn.type == socket.SOCK_DGRAM else "UNKNOWN"
+            print(f"\tConnection Type: {conn_type}")
+            try:
+                if isinstance(conn.laddr, tuple):
+                    print(f"\tLocal Address: {conn.laddr[0]}:{conn.laddr[1]}")
+                if isinstance(conn.raddr, tuple):
+                    print(f"\tRemote Address: {conn.raddr[0]}:{conn.raddr[1]}")
+            except:
+                pass #skips unprintable information
+            print(f"\tStatus: {conn.status}\n")
 
 
 def main():
