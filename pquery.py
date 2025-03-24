@@ -31,24 +31,33 @@ def get_process_info(pid):
 
 
 def verbose(pid):
-    files = psutil.Process(pid).open_files()
-    conns = psutil.net_connections(kind='inet')
-    print(f"Process Open Files: ", end="")
-    for file in files:
-        print(file.path, end=", ")
-    print(f"\nProcess Connections:")
-    for conn in conns:
-        if conn.pid == pid:
-            conn_type = "TCP" if conn.type == socket.SOCK_STREAM else "UDP" if conn.type == socket.SOCK_DGRAM else "UNKNOWN"
-            print(f"\tConnection Type: {conn_type}")
-            try:
-                if isinstance(conn.laddr, tuple):
-                    print(f"\tLocal Address: {conn.laddr[0]}:{conn.laddr[1]}")
-                if isinstance(conn.raddr, tuple):
-                    print(f"\tRemote Address: {conn.raddr[0]}:{conn.raddr[1]}")
-            except:
-                pass #skips unprintable information
-            print(f"\tStatus: {conn.status}\n")
+    try:
+        files = psutil.Process(pid).open_files()
+        conns = psutil.net_connections(kind='inet')
+        print(f"Process Open Files: ", end="")
+        for file in files:
+            print(file.path, end=", ")
+        print(f"\nProcess Connections:")
+        for conn in conns:
+            if conn.pid == pid:
+                conn_type = "TCP" if conn.type == socket.SOCK_STREAM else "UDP" if conn.type == socket.SOCK_DGRAM else "UNKNOWN"
+                print(f"\tConnection Type: {conn_type}")
+                try:
+                    if isinstance(conn.laddr, tuple):
+                        print(f"\tLocal Address: {conn.laddr[0]}:{conn.laddr[1]}")
+                    if isinstance(conn.raddr, tuple):
+                        print(f"\tRemote Address: {conn.raddr[0]}:{conn.raddr[1]}")
+                except:
+                    pass #skips unprintable information
+                print(f"\tStatus: {conn.status}\n")
+    except psutil.AccessDenied:
+        print(f"Error: Insufficient permissions to access detailed info for process {pid}.")
+    except psutil.NoSuchProcess:
+        print(f"Error: Process {pid} does not exist.")
+    except psutil.ZombieProcess:
+        print(f"Warning: Process {pid} is a zombie process.")
+    except Exception as e:
+        print(f"Error: {e}")
 
 
 def main():
