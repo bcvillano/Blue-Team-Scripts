@@ -4,13 +4,11 @@ import psutil
 import argparse
 import socket
 
-
-
 def arg_setup():
     msg = "Command line tool for querying information about processes"
     parser = argparse.ArgumentParser(description = msg)
     parser.add_argument("-v", "--verbose", help="increase output verbosity", action="store_true")
-    parser.add_argument('id', help="pid of process to look up", type=int) #required argument
+    parser.add_argument('pid', help="pid of process to look up", type=int) #required argument
     return parser.parse_args()
 
 def get_process_info(pid):
@@ -25,10 +23,8 @@ def get_process_info(pid):
     print(f"Process Path: {process.exe()}")
     print(f"Process Command: {cmdline_str}")
     print(f"Process Status: {process.status()}")
-    print(f"Process Parent ID: {process.ppid()}")
-    print(f"Process Parent Name: {psutil.Process(process.ppid()).name()}")
-
-
+    print(f"PPID ID: {process.ppid()}")
+    print(f"Parent Process Name: {psutil.Process(process.ppid()).name()}")
 
 def verbose(pid):
     try:
@@ -59,13 +55,11 @@ def verbose(pid):
     except Exception as e:
         print(f"Error: {e}")
 
-
 def main():
     args = arg_setup()
-    get_process_info(args.id)
+    get_process_info(args.pid)
     if args.verbose:
-        verbose(args.id)
-
+        verbose(args.pid)
 
 if __name__ == '__main__':
     main()
