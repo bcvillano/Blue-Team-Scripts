@@ -23,7 +23,7 @@ def get_process_info(pid):
     print(f"Process Path: {process.exe()}")
     print(f"Process Command: {cmdline_str}")
     print(f"Process Status: {process.status()}")
-    print(f"PPID ID: {process.ppid()}")
+    print(f"PPID: {process.ppid()}")
     print(f"Parent Process Name: {psutil.Process(process.ppid()).name()}")
 
 def verbose(pid):
